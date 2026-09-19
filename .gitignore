@@ -1,0 +1,32 @@
+# =============================================================================
+# Workfoster — WordPress project
+# =============================================================================
+
+# --- Secrets -----------------------------------------------------------------
+# Holds the database password and the site's authentication salts.
+# Use wp-config-sample-workfoster.php as the template instead.
+wp-config.php
+.htpasswd
+*.pem
+*.key
+
+# --- Uploads -----------------------------------------------------------------
+# Submitted files and captured email — other people's personal data.
+# Media is also environment-specific and belongs in a backup, not in git.
+/wp-content/uploads/
+
+# --- Generated / runtime -----------------------------------------------------
+/wp-content/debug.log
+/wp-content/cache/
+/wp-content/upgrade/
+/wp-content/backup*/
+*.log
+
+# --- OS / editor -------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*~

@@ -1,0 +1,19 @@
+/*
+Theme Name:   Workfoster (Hello Elementor Child)
+Theme URI:    https://workfoster.com/
+Description:  Child theme of Hello Elementor built for the Workfoster marketplace. Holds the brand design tokens, base typography and the small amount of front-end CSS/JS that does not belong in Elementor.
+Author:       Workfoster Web Team
+Author URI:   https://workfoster.com/
+Template:     hello-elementor
+Version:      1.0.0
+Requires PHP: 7.4
+License:      GNU General Public License v2 or later
+License URI:  https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:  workfoster
+Tags:         flexible-header, custom-colors, custom-menu, custom-logo, featured-images, rtl-language-support, threaded-comments, translation-ready
+*/
+
+/* -----------------------------------------------------------------------------
+ * Styles live in assets/css/theme.css so they can be versioned and cached
+ * separately. This file only carries the theme header.
+ * -------------------------------------------------------------------------- */

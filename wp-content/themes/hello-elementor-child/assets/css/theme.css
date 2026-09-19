@@ -1,0 +1,1529 @@
+/* =============================================================================
+ * Workfoster — base layer
+ * Design tokens + the handful of components Elementor does not build for us
+ * (Contact Form 7 output, the career grid, FAQ accordion, 404).
+ * ========================================================================== */
+
+:root {
+	--wf-green-800: #08422A;
+	--wf-green-700: #0B5C39;
+	--wf-green-600: #0F7A4D;
+	--wf-green-500: #16A163;
+	--wf-green-100: #D5EDE0;
+	--wf-green-50: #EAF6F0;
+
+	--wf-amber-500: #F2A93B;
+	--wf-amber-50: #FDF3E1;
+
+	--wf-ink: #10231B;
+	--wf-body: #47584F;
+	--wf-muted: #7A8B82;
+	--wf-line: #E2EAE5;
+	--wf-surface: #F5F9F7;
+	--wf-white: #FFFFFF;
+
+	--wf-radius-sm: 8px;
+	--wf-radius: 14px;
+	--wf-radius-lg: 22px;
+	--wf-radius-pill: 999px;
+
+	--wf-shadow-sm: 0 1px 2px rgba(16, 35, 27, .06), 0 1px 3px rgba(16, 35, 27, .04);
+	--wf-shadow: 0 4px 6px -2px rgba(16, 35, 27, .05), 0 12px 24px -6px rgba(16, 35, 27, .10);
+	--wf-shadow-lg: 0 18px 48px -12px rgba(11, 92, 57, .22);
+
+	--wf-ease: cubic-bezier(.4, 0, .2, 1);
+}
+
+/* --- Resets Hello Elementor leaves open ---------------------------------- */
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: 110px;
+}
+
+body {
+	color: var(--wf-body);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	/* Safety net for decorative elements that intentionally sit outside their
+	   container (the hero chips, the background glows). `clip` rather than
+	   `hidden` so position:sticky in the header keeps working. */
+	overflow-x: clip;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: var(--wf-ink);
+	letter-spacing: -.02em;
+}
+
+a {
+	transition: color .2s var(--wf-ease);
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+::selection {
+	background: var(--wf-green-100);
+	color: var(--wf-green-800);
+}
+
+:where(a, button, input, select, textarea):focus-visible {
+	outline: 2px solid var(--wf-green-500);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+/* Skip link — Hello ships one but it sits under the sticky header. */
+.skip-link:focus {
+	z-index: 100000;
+	top: 8px;
+	left: 8px;
+}
+
+/* --- Shared utility classes used from Elementor --------------------------- */
+
+.wf-eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 14px;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-green-50);
+	color: var(--wf-green-700);
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+
+.wf-eyebrow::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--wf-green-500);
+}
+
+.wf-card {
+	background: var(--wf-white);
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-lg);
+	box-shadow: var(--wf-shadow-sm);
+	transition: transform .25s var(--wf-ease), box-shadow .25s var(--wf-ease), border-color .25s var(--wf-ease);
+}
+
+.wf-card:hover {
+	transform: translateY(-4px);
+	border-color: var(--wf-green-100);
+	box-shadow: var(--wf-shadow);
+}
+
+.wf-gradient-panel {
+	background:
+		radial-gradient(900px 420px at 88% -10%, rgba(22, 161, 99, .18), transparent 62%),
+		radial-gradient(700px 380px at 4% 108%, rgba(242, 169, 59, .16), transparent 60%),
+		linear-gradient(135deg, #07301F 0%, #0B5C39 58%, #0F7A4D 100%);
+}
+
+.wf-dot-grid {
+	background-image: radial-gradient(rgba(15, 122, 77, .18) 1px, transparent 1px);
+	background-size: 18px 18px;
+}
+
+/* --- WP Job Manager ------------------------------------------------------- *
+ * The plugin outputs a <ul class="job_listings"> of <li> items plus its own
+ * filter form. These rules map that markup onto the site's card design.
+ * -------------------------------------------------------------------------- */
+
+ul.job_listings {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 24px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+ul.job_listings > li {
+	display: flex;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	list-style: none;
+}
+
+ul.job_listings > li::before,
+ul.job_listings > li::marker {
+	content: none;
+}
+
+ul.job_listings > li > .wf-job {
+	width: 100%;
+}
+
+/* The plugin's "no results" and loading states */
+li.no_job_listings_found,
+.job_listings .job-manager-info,
+.job_listings .job-manager-error {
+	grid-column: 1 / -1;
+	padding: 48px 24px;
+	text-align: center;
+	border: 1px dashed var(--wf-line);
+	border-radius: var(--wf-radius-lg);
+	color: var(--wf-muted);
+}
+
+.job_listings.loading {
+	opacity: .5;
+	transition: opacity .2s var(--wf-ease);
+}
+
+/* --- Filter form ---------------------------------------------------------- */
+
+.job_filters {
+	margin-bottom: 28px;
+	padding: 20px;
+	background: var(--wf-white);
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-lg);
+	box-shadow: var(--wf-shadow-sm);
+	overflow: hidden;
+}
+
+.job_filters .search_jobs {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 14px;
+	align-items: end;
+}
+
+.job_filters .search_jobs > div {
+	min-width: 0;
+}
+
+.job_filters label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--wf-ink);
+}
+
+.job_filters input[type="text"],
+.job_filters input[type="search"],
+.job_filters select {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-white);
+	font-family: inherit;
+	font-size: 15px;
+	color: var(--wf-ink);
+	transition: border-color .2s var(--wf-ease), box-shadow .2s var(--wf-ease);
+}
+
+.job_filters input:focus,
+.job_filters select:focus {
+	border-color: var(--wf-green-500);
+	box-shadow: 0 0 0 4px var(--wf-green-50);
+	outline: none;
+}
+
+.job_filters .search_categories select {
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A8B82' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 16px center;
+	background-size: 18px;
+	padding-right: 44px;
+	cursor: pointer;
+}
+
+/* Job type checkboxes, styled as the chip row the design uses */
+.job_filters .job_types {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	grid-column: 1 / -1;
+	margin: 4px 0 0;
+	padding: 14px 0 0;
+	border-top: 1px solid var(--wf-line);
+	list-style: none;
+}
+
+.job_filters .job_types li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.job_filters .job_types li::before {
+	content: none;
+}
+
+.job_filters .job_types label {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	padding: 9px 16px;
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-white);
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--wf-body);
+	cursor: pointer;
+	transition: all .2s var(--wf-ease);
+}
+
+.job_filters .job_types label:hover {
+	border-color: var(--wf-green-500);
+	color: var(--wf-green-700);
+}
+
+.job_filters .job_types input[type="checkbox"] {
+	margin: 0;
+	accent-color: var(--wf-green-600);
+}
+
+.job_filters .job_types li:has(input:checked) label {
+	background: var(--wf-green-50);
+	border-color: var(--wf-green-500);
+	color: var(--wf-green-800);
+}
+
+/* "Showing all / reset" line the plugin prints under the filters */
+.job_filters .showing_jobs {
+	grid-column: 1 / -1;
+	margin: 0;
+	padding-top: 12px;
+	font-size: 14.5px;
+	color: var(--wf-muted);
+}
+
+.job_filters .showing_jobs a {
+	color: var(--wf-green-600);
+	font-weight: 600;
+}
+
+/* --- Pagination / load more ----------------------------------------------- */
+
+.job-manager-pagination {
+	margin-top: 36px;
+}
+
+.job-manager-pagination ul {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	justify-content: center;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border: 0;
+}
+
+.job-manager-pagination li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border: 0;
+}
+
+.job-manager-pagination a,
+.job-manager-pagination span {
+	display: grid;
+	place-items: center;
+	min-width: 42px;
+	height: 42px;
+	padding: 0 14px;
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-pill);
+	color: var(--wf-body);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.job-manager-pagination .current,
+.job-manager-pagination a:hover {
+	background: var(--wf-green-600);
+	border-color: var(--wf-green-600);
+	color: #fff;
+}
+
+a.load_more_jobs {
+	display: block;
+	width: max-content;
+	margin: 32px auto 0;
+	padding: 13px 28px;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-green-600);
+	color: #fff;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+a.load_more_jobs:hover {
+	background: var(--wf-green-700);
+	color: #fff;
+}
+
+/* --- Career / project grid ------------------------------------------------ */
+
+.wf-careers {
+	--wf-cols: 3;
+}
+
+.wf-careers__toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 28px;
+}
+
+.wf-careers__search {
+	position: relative;
+	flex: 1 1 260px;
+	min-width: 220px;
+}
+
+.wf-careers__search input {
+	width: 100%;
+	padding: 13px 16px 13px 44px;
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-white);
+	font-size: 15px;
+	color: var(--wf-ink);
+	transition: border-color .2s var(--wf-ease), box-shadow .2s var(--wf-ease);
+}
+
+.wf-careers__search input:focus {
+	border-color: var(--wf-green-500);
+	box-shadow: 0 0 0 4px var(--wf-green-50);
+	outline: none;
+}
+
+.wf-careers__search svg {
+	position: absolute;
+	left: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 18px;
+	height: 18px;
+	color: var(--wf-muted);
+	pointer-events: none;
+}
+
+.wf-careers__filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.wf-chip {
+	padding: 10px 18px;
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-white);
+	color: var(--wf-body);
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all .2s var(--wf-ease);
+}
+
+.wf-chip:hover {
+	border-color: var(--wf-green-500);
+	color: var(--wf-green-700);
+}
+
+.wf-chip[aria-pressed="true"] {
+	background: var(--wf-green-600);
+	border-color: var(--wf-green-600);
+	color: var(--wf-white);
+}
+
+.wf-careers__grid {
+	display: grid;
+	grid-template-columns: repeat(var(--wf-cols), minmax(0, 1fr));
+	gap: 24px;
+}
+
+.wf-careers__empty {
+	grid-column: 1 / -1;
+	padding: 56px 24px;
+	text-align: center;
+	border: 1px dashed var(--wf-line);
+	border-radius: var(--wf-radius-lg);
+	color: var(--wf-muted);
+}
+
+.wf-job {
+	display: flex;
+	flex-direction: column;
+	padding: 26px;
+	background: var(--wf-white);
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-lg);
+	box-shadow: var(--wf-shadow-sm);
+	transition: transform .25s var(--wf-ease), box-shadow .25s var(--wf-ease), border-color .25s var(--wf-ease);
+}
+
+.wf-job:hover {
+	transform: translateY(-4px);
+	border-color: var(--wf-green-100);
+	box-shadow: var(--wf-shadow);
+}
+
+.wf-job__head {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	margin-bottom: 16px;
+}
+
+.wf-job__logo {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 52px;
+	height: 52px;
+	border-radius: var(--wf-radius);
+	background: var(--wf-green-50);
+	color: var(--wf-green-700);
+	font-weight: 700;
+	font-size: 18px;
+	letter-spacing: -.02em;
+}
+
+.wf-job__title {
+	margin: 0 0 4px;
+	font-size: 19px;
+	line-height: 1.35;
+}
+
+.wf-job__title a {
+	color: var(--wf-ink);
+	text-decoration: none;
+}
+
+.wf-job__title a:hover {
+	color: var(--wf-green-600);
+}
+
+.wf-job__company {
+	margin: 0;
+	font-size: 14px;
+	color: var(--wf-muted);
+}
+
+.wf-job__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 18px;
+	margin-bottom: 16px;
+	font-size: 14px;
+	color: var(--wf-body);
+}
+
+.wf-job__meta span {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.wf-job__meta svg {
+	width: 15px;
+	height: 15px;
+	color: var(--wf-green-600);
+}
+
+.wf-job__excerpt {
+	margin: 0 0 18px;
+	font-size: 15px;
+	line-height: 1.65;
+	color: var(--wf-body);
+}
+
+.wf-job__skills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 20px;
+}
+
+.wf-tag {
+	padding: 5px 12px;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-surface);
+	border: 1px solid var(--wf-line);
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--wf-body);
+}
+
+.wf-job__foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-top: auto;
+	padding-top: 18px;
+	border-top: 1px solid var(--wf-line);
+}
+
+.wf-job__rate {
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--wf-ink);
+}
+
+.wf-job__rate small {
+	font-weight: 500;
+	color: var(--wf-muted);
+}
+
+/* --- Buttons -------------------------------------------------------------- */
+
+/* Specificity note: the Elementor kit emits `.elementor-kit-N a { color: … }`,
+   which outranks a bare `.wf-btn`. Pairing the class with :link/:visited keeps
+   these rules winning without resorting to !important. */
+.wf-btn,
+a.wf-btn:link,
+a.wf-btn:visited {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 12px 22px;
+	border: 1px solid transparent;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-green-600);
+	color: var(--wf-white);
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all .2s var(--wf-ease);
+}
+
+.wf-btn:hover,
+a.wf-btn:hover,
+a.wf-btn:focus-visible {
+	background: var(--wf-green-700);
+	color: var(--wf-white);
+	transform: translateY(-1px);
+	box-shadow: var(--wf-shadow);
+}
+
+.wf-btn--ghost,
+a.wf-btn--ghost:link,
+a.wf-btn--ghost:visited {
+	background: transparent;
+	border-color: var(--wf-line);
+	color: var(--wf-green-700);
+}
+
+.wf-btn--ghost:hover,
+a.wf-btn--ghost:hover {
+	background: var(--wf-green-50);
+	border-color: var(--wf-green-500);
+	color: var(--wf-green-800);
+	box-shadow: none;
+}
+
+.wf-btn--sm {
+	padding: 9px 17px;
+	font-size: 14px;
+}
+
+/* The card footer is tight at three columns — never let the label wrap. */
+.wf-job__foot .wf-btn {
+	flex: none;
+	white-space: nowrap;
+}
+
+.wf-job__rate {
+	min-width: 0;
+}
+
+/* --- Career single -------------------------------------------------------- */
+
+.wf-single {
+	padding: 0 0 80px;
+}
+
+.wf-single__hero {
+	padding: 56px 0 44px;
+	background: var(--wf-surface);
+	border-bottom: 1px solid var(--wf-line);
+}
+
+.wf-wrap {
+	width: min(1140px, 100% - 40px);
+	margin-inline: auto;
+}
+
+.wf-breadcrumb {
+	margin-bottom: 18px;
+	font-size: 14px;
+	color: var(--wf-muted);
+}
+
+.wf-breadcrumb a {
+	color: var(--wf-green-700);
+	text-decoration: none;
+}
+
+.wf-breadcrumb a:hover {
+	text-decoration: underline;
+}
+
+.wf-breadcrumb span {
+	margin: 0 8px;
+	opacity: .5;
+}
+
+.wf-single__title {
+	margin: 0 0 12px;
+	font-size: clamp(30px, 4vw, 42px);
+	line-height: 1.18;
+}
+
+.wf-single__sub {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px 22px;
+	font-size: 15px;
+	color: var(--wf-body);
+}
+
+.wf-single__sub span {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+}
+
+.wf-single__sub svg {
+	width: 16px;
+	height: 16px;
+	color: var(--wf-green-600);
+}
+
+.wf-single__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 340px;
+	gap: 40px;
+	align-items: start;
+	padding-top: 48px;
+}
+
+.wf-single__content h2 {
+	margin: 34px 0 14px;
+	font-size: 24px;
+}
+
+.wf-single__content h3 {
+	margin: 26px 0 10px;
+	font-size: 19px;
+}
+
+.wf-single__content > *:first-child {
+	margin-top: 0;
+}
+
+.wf-single__content p {
+	line-height: 1.75;
+}
+
+.wf-single__content ul {
+	margin: 0 0 18px;
+	padding: 0;
+	list-style: none;
+}
+
+.wf-single__content ul li {
+	position: relative;
+	padding-left: 28px;
+	margin-bottom: 10px;
+	line-height: 1.7;
+}
+
+.wf-single__content ul li::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: .55em;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--wf-green-50);
+	box-shadow: inset 0 0 0 1px var(--wf-green-100);
+}
+
+.wf-single__content ul li::after {
+	content: "";
+	position: absolute;
+	left: 5px;
+	top: calc(.55em + 5px);
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--wf-green-600);
+}
+
+.wf-aside {
+	position: sticky;
+	top: 110px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.wf-panel {
+	padding: 24px;
+	background: var(--wf-white);
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-lg);
+	box-shadow: var(--wf-shadow-sm);
+}
+
+.wf-panel h3 {
+	margin: 0 0 16px;
+	font-size: 16px;
+	text-transform: uppercase;
+	letter-spacing: .06em;
+	color: var(--wf-muted);
+}
+
+.wf-facts {
+	margin: 0;
+}
+
+.wf-facts div {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 11px 0;
+	border-bottom: 1px solid var(--wf-line);
+	font-size: 14.5px;
+}
+
+.wf-facts div:last-child {
+	border-bottom: 0;
+	padding-bottom: 0;
+}
+
+.wf-facts dt {
+	color: var(--wf-muted);
+}
+
+.wf-facts dd {
+	margin: 0;
+	font-weight: 600;
+	color: var(--wf-ink);
+	text-align: right;
+}
+
+.wf-panel--cta {
+	background: var(--wf-green-800);
+	border-color: var(--wf-green-800);
+	color: rgba(255, 255, 255, .84);
+	text-align: center;
+}
+
+.wf-panel--cta h3,
+.wf-panel--cta p {
+	color: var(--wf-white);
+}
+
+.wf-panel--cta h3 {
+	text-transform: none;
+	letter-spacing: -.01em;
+	font-size: 20px;
+	margin-bottom: 8px;
+}
+
+.wf-panel--cta p {
+	margin: 0 0 18px;
+	font-size: 14.5px;
+	color: rgba(255, 255, 255, .78);
+}
+
+.wf-panel--cta .wf-btn {
+	width: 100%;
+	background: var(--wf-amber-500);
+	color: var(--wf-green-800);
+}
+
+.wf-panel--cta .wf-btn:hover {
+	background: #FFC15E;
+}
+
+.wf-share {
+	display: flex;
+	gap: 10px;
+}
+
+.wf-share a {
+	display: grid;
+	place-items: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	border: 1px solid var(--wf-line);
+	color: var(--wf-body);
+	transition: all .2s var(--wf-ease);
+}
+
+.wf-share a:hover {
+	background: var(--wf-green-600);
+	border-color: var(--wf-green-600);
+	color: var(--wf-white);
+}
+
+.wf-share svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* --- Application / contact forms (Contact Form 7) ------------------------- */
+
+.wf-form {
+	--wf-field-bg: var(--wf-white);
+}
+
+.wf-form .wpcf7-form > p {
+	margin: 0;
+}
+
+.wf-grid-2 {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 18px;
+}
+
+.wf-field {
+	display: block;
+	margin-bottom: 18px;
+}
+
+.wf-field > span.wf-label,
+.wf-field-label {
+	display: block;
+	margin-bottom: 7px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--wf-ink);
+}
+
+.wf-field .wf-req {
+	color: #C0392B;
+	margin-left: 2px;
+}
+
+.wf-form input[type="text"],
+.wf-form input[type="email"],
+.wf-form input[type="tel"],
+.wf-form input[type="url"],
+.wf-form input[type="number"],
+.wf-form input[type="date"],
+.wf-form select,
+.wf-form textarea {
+	width: 100%;
+	padding: 13px 15px;
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius);
+	background: var(--wf-field-bg);
+	color: var(--wf-ink);
+	font-family: inherit;
+	font-size: 15px;
+	line-height: 1.5;
+	transition: border-color .2s var(--wf-ease), box-shadow .2s var(--wf-ease);
+}
+
+.wf-form textarea {
+	min-height: 140px;
+	resize: vertical;
+}
+
+.wf-form select {
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A8B82' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 14px center;
+	background-size: 18px;
+	padding-right: 42px;
+}
+
+.wf-form input:focus,
+.wf-form select:focus,
+.wf-form textarea:focus {
+	border-color: var(--wf-green-500);
+	box-shadow: 0 0 0 4px var(--wf-green-50);
+	outline: none;
+}
+
+.wf-form input[type="file"] {
+	width: 100%;
+	padding: 11px 14px;
+	border: 1px dashed var(--wf-line);
+	border-radius: var(--wf-radius);
+	background: var(--wf-surface);
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.wf-form input[type="file"]::file-selector-button {
+	margin-right: 12px;
+	padding: 8px 14px;
+	border: 0;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-green-600);
+	color: var(--wf-white);
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.wf-hint {
+	display: block;
+	margin-top: 6px;
+	font-size: 13px;
+	color: var(--wf-muted);
+}
+
+.wf-consent {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	padding: 14px 16px;
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius);
+	background: var(--wf-surface);
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--wf-body);
+}
+
+/* Once consent is given the row recedes — it has done its job. */
+.wf-consent:has(input:checked) {
+	background: var(--wf-green-50);
+	border-color: var(--wf-green-100);
+}
+
+.wf-consent .wpcf7-list-item {
+	margin: 0;
+}
+
+.wf-consent .wpcf7-list-item-label {
+	font-size: 14px;
+}
+
+.wf-form input[type="checkbox"],
+.wf-form input[type="radio"] {
+	accent-color: var(--wf-green-600);
+	width: 17px;
+	height: 17px;
+	margin-right: 8px;
+}
+
+.wf-form .wpcf7-submit {
+	width: 100%;
+	padding: 15px 28px;
+	border: 0;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-green-600);
+	color: var(--wf-white);
+	font-family: inherit;
+	font-size: 16px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: all .2s var(--wf-ease);
+}
+
+.wf-form .wpcf7-submit:hover {
+	background: var(--wf-green-700);
+	box-shadow: var(--wf-shadow);
+}
+
+/* Contact Form 7 disables the submit button until a required [acceptance] box
+   is ticked. A dimmed version of the green button just reads as "broken", so
+   the blocked state gets its own treatment and the consent row is highlighted
+   as the thing standing in the way. */
+.wf-form .wpcf7-submit:disabled {
+	background: var(--wf-surface);
+	border: 1px solid var(--wf-line);
+	color: var(--wf-muted);
+	box-shadow: none;
+	cursor: not-allowed;
+}
+
+.wf-form .wpcf7-submit:disabled:hover {
+	background: var(--wf-surface);
+	box-shadow: none;
+}
+
+.wf-form .wpcf7-spinner {
+	display: block;
+	margin: 12px auto 0;
+}
+
+/* CF7 validation + response messaging */
+.wf-form .wpcf7-not-valid-tip {
+	display: block;
+	margin-top: 6px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #C0392B;
+}
+
+.wf-form .wpcf7-not-valid {
+	border-color: #E2A29B !important;
+	box-shadow: 0 0 0 4px rgba(192, 57, 43, .08) !important;
+}
+
+.wf-form .wpcf7-response-output {
+	margin: 20px 0 0 !important;
+	padding: 16px 18px !important;
+	border: 1px solid var(--wf-line) !important;
+	border-radius: var(--wf-radius) !important;
+	background: var(--wf-surface);
+	font-size: 14.5px;
+	line-height: 1.6;
+}
+
+.wf-form .wpcf7 form.invalid .wpcf7-response-output,
+.wf-form .wpcf7 form.unaccepted .wpcf7-response-output,
+.wf-form .wpcf7 form.payment-required .wpcf7-response-output {
+	border-color: #E2A29B !important;
+	background: #FDF2F0;
+	color: #96281B;
+}
+
+/* The success state is replaced entirely by the thank-you panel below, but we
+   keep this styled for the brief moment before the JS swap runs. */
+.wf-form .wpcf7 form.sent .wpcf7-response-output {
+	border-color: var(--wf-green-100) !important;
+	background: var(--wf-green-50);
+	color: var(--wf-green-800);
+}
+
+/* --- Default WordPress search form ---------------------------------------- */
+
+/* Hello Elementor's reset paints bare buttons pink (#c36); the 404 and search
+   templates use get_search_form(), so it needs brand styling too. */
+.search-form {
+	display: flex;
+	gap: 8px;
+	align-items: stretch;
+}
+
+.search-form label {
+	flex: 1 1 auto;
+	margin: 0;
+}
+
+.search-form .search-field,
+.search-form input[type="search"] {
+	width: 100%;
+	padding: 13px 18px;
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-white);
+	font-size: 15px;
+	color: var(--wf-ink);
+	transition: border-color .2s var(--wf-ease), box-shadow .2s var(--wf-ease);
+}
+
+.search-form input[type="search"]:focus {
+	border-color: var(--wf-green-500);
+	box-shadow: 0 0 0 4px var(--wf-green-50);
+	outline: none;
+}
+
+.search-form .search-submit,
+.search-form input[type="submit"],
+.search-form button[type="submit"] {
+	flex: none;
+	padding: 13px 26px;
+	border: 0;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-green-600);
+	color: var(--wf-white);
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color .2s var(--wf-ease);
+}
+
+.search-form .search-submit:hover,
+.search-form input[type="submit"]:hover,
+.search-form button[type="submit"]:hover {
+	background: var(--wf-green-700);
+	color: var(--wf-white);
+}
+
+/* --- Thank-you panel (shown after a successful submit) -------------------- */
+
+.wf-thanks {
+	display: none;
+	padding: 44px 32px;
+	text-align: center;
+	background: var(--wf-white);
+	border: 1px solid var(--wf-green-100);
+	border-radius: var(--wf-radius-lg);
+	box-shadow: var(--wf-shadow);
+}
+
+.wf-thanks.is-visible {
+	display: block;
+	animation: wf-pop .4s var(--wf-ease) both;
+}
+
+.wf-thanks__icon {
+	display: grid;
+	place-items: center;
+	width: 72px;
+	height: 72px;
+	margin: 0 auto 20px;
+	border-radius: 50%;
+	background: var(--wf-green-50);
+	color: var(--wf-green-600);
+}
+
+.wf-thanks__icon svg {
+	width: 34px;
+	height: 34px;
+}
+
+.wf-thanks h3 {
+	margin: 0 0 10px;
+	font-size: 26px;
+}
+
+.wf-thanks p {
+	max-width: 46ch;
+	margin: 0 auto 8px;
+	line-height: 1.7;
+}
+
+.wf-thanks__ref {
+	display: inline-block;
+	margin-top: 16px;
+	padding: 8px 16px;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-surface);
+	border: 1px dashed var(--wf-line);
+	font-size: 14px;
+	color: var(--wf-body);
+}
+
+.wf-thanks__actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 12px;
+	margin-top: 26px;
+}
+
+.wf-form-wrap.is-sent .wf-form-inner {
+	display: none;
+}
+
+@keyframes wf-pop {
+	from { opacity: 0; transform: translateY(12px) scale(.98); }
+	to   { opacity: 1; transform: none; }
+}
+
+/* --- FAQ accordion -------------------------------------------------------- */
+
+.wf-faq {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.wf-faq__item {
+	border: 1px solid var(--wf-line);
+	border-radius: var(--wf-radius);
+	background: var(--wf-white);
+	overflow: hidden;
+	transition: border-color .2s var(--wf-ease), box-shadow .2s var(--wf-ease);
+}
+
+.wf-faq__item[open] {
+	border-color: var(--wf-green-100);
+	box-shadow: var(--wf-shadow-sm);
+}
+
+.wf-faq__q {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 18px 22px;
+	font-size: 16.5px;
+	font-weight: 600;
+	color: var(--wf-ink);
+	cursor: pointer;
+	list-style: none;
+}
+
+.wf-faq__q::-webkit-details-marker {
+	display: none;
+}
+
+.wf-faq__q::after {
+	content: "";
+	flex: none;
+	width: 11px;
+	height: 11px;
+	border-right: 2px solid var(--wf-green-600);
+	border-bottom: 2px solid var(--wf-green-600);
+	transform: rotate(45deg) translate(-2px, -2px);
+	transition: transform .2s var(--wf-ease);
+}
+
+.wf-faq__item[open] .wf-faq__q::after {
+	transform: rotate(-135deg) translate(-2px, -2px);
+}
+
+.wf-faq__a {
+	padding: 0 22px 20px;
+	font-size: 15.5px;
+	line-height: 1.75;
+	color: var(--wf-body);
+}
+
+.wf-faq__a p:last-child {
+	margin-bottom: 0;
+}
+
+/* --- Legal / long-form pages ---------------------------------------------- */
+
+.wf-legal h2 {
+	margin: 36px 0 12px;
+	font-size: 24px;
+}
+
+.wf-legal h3 {
+	margin: 24px 0 8px;
+	font-size: 18px;
+}
+
+.wf-legal p,
+.wf-legal li {
+	line-height: 1.8;
+}
+
+.wf-legal ul {
+	padding-left: 22px;
+	margin-bottom: 18px;
+}
+
+/* --- 404 ------------------------------------------------------------------ */
+
+.wf-404 {
+	display: grid;
+	place-items: center;
+	min-height: 66vh;
+	padding: 80px 20px;
+	text-align: center;
+}
+
+.wf-404__code {
+	font-size: clamp(88px, 18vw, 168px);
+	font-weight: 800;
+	line-height: 1;
+	letter-spacing: -.05em;
+	background: linear-gradient(135deg, var(--wf-green-600), var(--wf-amber-500));
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+/* --- Header / footer polish for the Elementor templates ------------------- */
+
+.wf-header.elementor-sticky--effects {
+	background: rgba(255, 255, 255, .92) !important;
+	backdrop-filter: saturate(180%) blur(12px);
+	box-shadow: 0 1px 0 var(--wf-line), 0 8px 24px -16px rgba(16, 35, 27, .3);
+}
+
+.wf-nav .hfe-nav-menu a.hfe-menu-item,
+.wf-nav .hfe-nav-menu a.hfe-sub-menu-item {
+	font-weight: 600;
+}
+
+.wf-footer a {
+	text-decoration: none;
+}
+
+.wf-footer a:hover {
+	color: var(--wf-white) !important;
+}
+
+/* --- Responsive ----------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+	ul.job_listings,
+	.wf-careers__grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.job_filters .search_jobs {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.wf-single__layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.wf-aside {
+		position: static;
+	}
+}
+
+@media (max-width: 767px) {
+	html { scroll-padding-top: 84px; }
+
+	ul.job_listings,
+	.wf-careers__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.job_filters {
+		padding: 16px;
+	}
+
+	.wf-grid-2 {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.wf-single__hero {
+		padding: 36px 0 30px;
+	}
+
+	.wf-job__foot {
+		flex-direction: column;
+		align-items: stretch;
+		text-align: center;
+	}
+
+	.wf-job__foot .wf-btn {
+		width: 100%;
+	}
+
+	.wf-thanks {
+		padding: 34px 20px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html { scroll-behavior: auto; }
+
+	*, *::before, *::after {
+		animation-duration: .01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: .01ms !important;
+	}
+}
+
+/* --- Print ---------------------------------------------------------------- */
+
+@media print {
+	.wf-header,
+	.wf-footer,
+	.wf-aside,
+	.wf-careers__toolbar {
+		display: none !important;
+	}
+}
+
+/* --- WP Job Manager: filter submit + featured card -------------------------
+ * Hello Elementor's reset paints bare submit buttons pink (#c36), and the
+ * plugin's own "featured" treatment is dequeued, so both are defined here.
+ * -------------------------------------------------------------------------- */
+
+.job_filters input[type="submit"],
+.job_filters button[type="submit"],
+.job_filters .search_submit input {
+	width: auto;
+	padding: 13px 28px;
+	border: 0;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-green-600);
+	color: var(--wf-white);
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: background-color .2s var(--wf-ease);
+}
+
+.job_filters input[type="submit"]:hover,
+.job_filters button[type="submit"]:hover {
+	background: var(--wf-green-700);
+	color: var(--wf-white);
+}
+
+/* Remote-position checkbox sits inline with its label */
+.job_filters .search_remote_position,
+.job_filters div:has(> input[type="checkbox"]) {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+}
+
+.job_filters .search_remote_position label,
+.job_filters div:has(> input[type="checkbox"]) label {
+	margin: 0;
+	font-weight: 500;
+	color: var(--wf-body);
+}
+
+.job_filters input[type="checkbox"] {
+	width: 17px;
+	height: 17px;
+	accent-color: var(--wf-green-600);
+}
+
+/* Featured listings — a quiet badge rather than a yellow wash */
+.wf-job--featured {
+	border-color: var(--wf-green-100);
+	box-shadow: 0 0 0 1px var(--wf-green-100), var(--wf-shadow-sm);
+}
+
+.wf-job__badge {
+	margin-left: auto;
+	flex: none;
+	align-self: flex-start;
+	padding: 4px 10px;
+	border-radius: var(--wf-radius-pill);
+	background: var(--wf-amber-50);
+	color: #9A6410;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+/* The RSS link WPJM appends to the filter block */
+.job_filters .rss_link,
+a.job_filters__rss {
+	display: inline-block;
+	margin-top: 10px;
+	font-size: 13px;
+	color: var(--wf-muted);
+}
